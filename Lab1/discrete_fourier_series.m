@@ -9,7 +9,7 @@ subplot(2,1,1)
 plot(n, origin, 'o');
 title('Origin Signal')
 ylim([-1.5 1.5])
-xlim([0 10])
+xlim([0 100])
 hold on;
 
 % Discrete Fourier Series
@@ -17,9 +17,10 @@ samplePeriod = 61; % samplePeriod should be designed carefully
 k = samplePeriod - 1;
 f = @mysqure;
 dfs = DFS(f, k, samplePeriod);
-y = dfs(n);
+t = 1:0.1:100;
+y = dfs(t);
 subplot(2,1,2)
-plot(n, y)
+plot(t, y)
 title(['Discrete Fourier Series k=', num2str(k)])
 ylim([-1.5 1.5])
 xlim([0 10])
@@ -37,5 +38,6 @@ function f = DFS(func, K, N)
 end
 
 function result = mysqure(n)
+    % result = square(0.5*pi*(n-2));
     result = square(0.5*pi*(n-2));
 end
