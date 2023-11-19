@@ -1,74 +1,97 @@
 % Task 1: FFT of Triangle and Square Waves
-N = 10000;
-Fs = 1000;
-n = 0:10;
+clc; clear; close all;
 
-x_tri = triangle(n);
-x_sqr = square(n);
+% Define parameters
+num_points = 10000;
+sampling_rate = 1000;
+time_vector = 0:10;
 
-X_tri_fft = fft(x_tri, N);
-X_sqr_fft = fft(x_sqr, N);
-f = Fs*(0:N-1)/N;
+% Generate triangle and square waves
+triangle_wave = generate_triangle_wave(time_vector);
+square_wave = generate_square_wave(time_vector);
 
-% Time Domain
-subplot(2, 3, 1);
-stem(n, x_tri);
-title("Triangle Wave in Time Domain");
-xlabel("n");
-ylabel("x[n]");
-subplot(2, 3, 4);
-stem(n, x_sqr);
-title("Square Wave in Time Domain");
-xlabel("n");
-ylabel("x[n]");
+% Compute FFT of the waves
+fft_triangle_wave = fft(triangle_wave, num_points);
+fft_square_wave = fft(square_wave, num_points);
+frequency_vector = sampling_rate*(0:num_points-1)/num_points;
 
-% Magnitude
-subplot(2, 3, 2);
-plot(f, abs(X_tri_fft), "LineWidth",3);
-title("Triangle Wave in Frequency Domain");
-xlabel("f (Hz)");
-ylabel("|fft(x)|");
-subplot(2, 3, 5);
-plot(f, abs(X_sqr_fft), "LineWidth",3);
-title("Square Wave in Frequency Domain");
-xlabel("f (Hz)");
-ylabel("|fft(x)|");
+% Plot time domain representation
+plot_time_domain(time_vector, triangle_wave, square_wave);
 
-% Phase Angle
-subplot(2, 3, 3);
-plot(f, angle(X_tri_fft), "LineWidth",3);
-title("Triangle Wave Phase Angle");
-xlabel("f (Hz)");
-ylabel("Phase Angle");
-subplot(2, 3, 6);
-plot(f, angle(X_sqr_fft), "LineWidth",3);
-title("Square Wave Phase Angle");
-xlabel("f (Hz)");
-ylabel("Phase Angle");
+% Plot frequency domain representation (magnitude)
+plot_frequency_domain_magnitude(frequency_vector, fft_triangle_wave, fft_square_wave);
 
+% Plot frequency domain representation (phase)
+plot_frequency_domain_phase(frequency_vector, fft_triangle_wave, fft_square_wave);
 
-
-
-function x = triangle(n)
-    function x_val = triangle_val(n)
-        if n >= 0 && n <= 4
-            x_val = n+1;
-        elseif n >= 5 && n <= 8
-            x_val = 9-n;
-        else
-            x_val = 0;
-        end
-    end
-    x = arrayfun(@triangle_val, n);
+% Function to generate triangle wave
+function wave = generate_triangle_wave(time_vector)
+    wave = arrayfun(@triangle_wave_value, time_vector);
 end
 
-function x = square(n)
-    function x_val = square_val(n)
-        if n >= 0 && n <= 6
-            x_val = 1;
-        else
-            x_val = 0;
-        end
+% Function to generate square wave
+function wave = generate_square_wave(time_vector)
+    wave = arrayfun(@square_wave_value, time_vector);
+end
+
+% Function to compute value of triangle wave at a given time
+function value = triangle_wave_value(time)
+    if time >= 0 && time <= 4
+        value = time+1;
+    elseif time >= 5 && time <= 8
+        value = 9-time;
+    else
+        value = 0;
     end
-    x = arrayfun(@square_val, n);
+end
+
+% Function to compute value of square wave at a given time
+function value = square_wave_value(time)
+    if time >= 0 && time <= 6
+        value = 1;
+    else
+        value = 0;
+    end
+end
+
+% Function to plot time domain representation
+function plot_time_domain(time_vector, triangle_wave, square_wave)
+    subplot(2, 3, 1);
+    stem(time_vector, triangle_wave);
+    title("Triangle Wave in Time Domain");
+    xlabel("n");
+    ylabel("x[n]");
+    subplot(2, 3, 4);
+    stem(time_vector, square_wave);
+    title("Square Wave in Time Domain");
+    xlabel("n");
+    ylabel("x[n]");
+end
+
+% Function to plot frequency domain representation (magnitude)
+function plot_frequency_domain_magnitude(frequency_vector, fft_triangle_wave, fft_square_wave)
+    subplot(2, 3, 2);
+    plot(frequency_vector, abs(fft_triangle_wave), "LineWidth",3);
+    title("Triangle Wave in Frequency Domain");
+    xlabel("f (Hz)");
+    ylabel("|fft(x)|");
+    subplot(2, 3, 5);
+    plot(frequency_vector, abs(fft_square_wave), "LineWidth",3);
+    title("Square Wave in Frequency Domain");
+    xlabel("f (Hz)");
+    ylabel("|fft(x)|");
+end
+
+% Function to plot frequency domain representation (phase)
+function plot_frequency_domain_phase(frequency_vector, fft_triangle_wave, fft_square_wave)
+    subplot(2, 3, 3);
+    plot(frequency_vector, angle(fft_triangle_wave), "LineWidth",3);
+    title("Triangle Wave Phase Angle");
+    xlabel("f (Hz)");
+    ylabel("Phase Angle");
+    subplot(2, 3, 6);
+    plot(frequency_vector, angle(fft_square_wave), "LineWidth",3);
+    title("Square Wave Phase Angle");
+    xlabel("f (Hz)");
+    ylabel("Phase Angle");
 end
